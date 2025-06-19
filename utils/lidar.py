@@ -82,19 +82,21 @@ def cast_rays_from_site(
 
         # call whichever ray API is available
         if hasattr(mujoco, "mj_ray"):
-            mujoco.mj_ray(
+            # Newer MuJoCo API (distance returned as the function result)
+            dist_val = mujoco.mj_ray(
                 model,
                 data,
                 origin,
                 vec,
-                geomgroup,
-                int(include_static),
-                int(include_dynamic),
-                dist,
-                geomid,
+                geomgroup=geomgroup,
+                flg_static=int(include_static),
+                bodyexclude=-1,
+                geomid=geomid,
             )
+            if geomid >= 0:
+                distances[i] = float(dist_val)
         elif hasattr(mujoco, "mj_raycast"):
-            # older API name
+            # Older API name where distance is an output argument
             mujoco.mj_raycast(
                 model,
                 data,
@@ -106,11 +108,10 @@ def cast_rays_from_site(
                 dist,
                 geomid,
             )
+            if geomid >= 0:
+                distances[i] = float(dist)
         else:
             raise RuntimeError("No MuJoCo ray casting function found")
-
-        if geomid >= 0:
-            distances[i] = float(dist)
 
     return distances
 
