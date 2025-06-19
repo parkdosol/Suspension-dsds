@@ -1,0 +1,9 @@
+<mujoco model="walls">
+    <worldbody>
+        <!-- Walls for LiDAR testing -->
+        <geom name="wall_north" type="box" pos="0 10 1" size="10 0.1 1" rgba="0.7 0.7 0.7 1"/>
+        <geom name="wall_south" type="box" pos="0 -10 1" size="10 0.1 1" rgba="0.7 0.7 0.7 1"/>
+        <geom name="wall_east" type="box" pos="10 0 1" size="0.1 10 1" rgba="0.7 0.7 0.7 1"/>
+        <geom name="wall_west" type="box" pos="-10 0 1" size="0.1 10 1" rgba="0.7 0.7 0.7 1"/>
+    </worldbody>
+</mujoco>

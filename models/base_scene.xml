@@ -3,6 +3,7 @@
     <option gravity="0 0 -9.81" integrator="RK4" timestep="0.001"/>
 
     <include file="vehicle_model.xml"/>
+    <include file="walls.xml"/>
 
     <asset>
         <!-- ✅bump mesh가 여기에 추가됨  -->
