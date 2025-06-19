@@ -2,7 +2,7 @@
     <compiler angle="degree" coordinate="local"/>
     <option gravity="0 0 -9.81" integrator="RK4" timestep="0.001"/>
 
-    <include file="car/vehicle_model.xml"/>  
+    <include file="vehicle_model.xml"/>
 
     <asset>
         <!-- ✅bump mesh가 여기에 추가됨  -->
