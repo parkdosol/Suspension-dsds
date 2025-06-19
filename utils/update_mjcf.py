@@ -1,10 +1,16 @@
 import os
 import random
 import xml.etree.ElementTree as ET
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_BASE_XML = SCRIPT_DIR.parent / "models" / "base_scene.xml"
+DEFAULT_OUTPUT_XML = SCRIPT_DIR.parent / "models" / "generated_scene.xml"
+DEFAULT_STL_DIR = SCRIPT_DIR.parent / "models" / "speedbumps"
 
 def insert_stl_to_mjcf(
-    base_xml_path="../models/base_scene.xml",
-    output_xml_path="../models/generated_scene.xml",
+    base_xml_path=DEFAULT_BASE_XML,
+    output_xml_path=DEFAULT_OUTPUT_XML,
     n_bump=5,                    # 소환할 bump 개수
     x_start=5.0,                 # 첫 bump 시작점
     min_gap=5.0,                 # 최소 거리
@@ -17,7 +23,7 @@ def insert_stl_to_mjcf(
     if random_seed is not None:
         random.seed(random_seed)
 
-    stl_dir = "../models/speedbumps"
+    stl_dir = Path(DEFAULT_STL_DIR)
     stl_files = sorted([
         fname for fname in os.listdir(stl_dir)
         if fname.endswith(".stl")
@@ -26,9 +32,9 @@ def insert_stl_to_mjcf(
         raise RuntimeError("No STL files found in speedbumps folder!")
 
     # bump 개수와 STL 개수 맞추기 (모자라면 처음부터 재사용)
-    stl_list = [os.path.join(stl_dir, stl_files[i % len(stl_files)]) for i in range(n_bump)]
+    stl_list = [stl_dir / stl_files[i % len(stl_files)] for i in range(n_bump)]
 
-    tree = ET.parse(base_xml_path)
+    tree = ET.parse(str(base_xml_path))
     root = tree.getroot()
 
     asset_tag = root.find("asset")
@@ -42,9 +48,9 @@ def insert_stl_to_mjcf(
 
     x = x_start
     for i, path in enumerate(stl_list):
-        fname = os.path.basename(path)
+        fname = Path(path).name
         mesh_name = os.path.splitext(fname)[0]
-        rel_path = os.path.relpath(path, os.path.dirname(output_xml_path))
+        rel_path = os.path.relpath(path, os.path.dirname(str(output_xml_path)))
 
         # asset 등록 (중복 방지)
         if not any(m.get("name") == mesh_name for m in asset_tag.findall("mesh")):
@@ -60,8 +66,8 @@ def insert_stl_to_mjcf(
             gap = random.uniform(min_gap, max_gap)
             x += gap
 
-    os.makedirs(os.path.dirname(output_xml_path), exist_ok=True)
-    tree.write(output_xml_path)
+    os.makedirs(os.path.dirname(str(output_xml_path)), exist_ok=True)
+    tree.write(str(output_xml_path))
     print(f"✅ 랜덤 gap으로 {n_bump}개 bump 소환 완료 → {output_xml_path}")
 
 if __name__ == "__main__":
