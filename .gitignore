@@ -1,0 +1,4 @@
+models/speedbumps/
+models/generated_scene.xml
+__pycache__/
+*.pyc
