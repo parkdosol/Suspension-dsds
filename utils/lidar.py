@@ -51,6 +51,13 @@ def cast_rays_from_site(
         dist = np.asarray(max_distance, dtype=float)
         geomid = np.asarray(-1, dtype=np.int32)
 
+        if geomgroup < 0:
+            geomgroup_arr = np.ones(6, dtype=np.uint8)
+        else:
+            geomgroup_arr = np.array(
+                [(geomgroup >> j) & 1 for j in range(6)], dtype=np.uint8
+            )
+
         # call whichever ray API is available
         if hasattr(mujoco, "mj_ray"):
             # Newer MuJoCo API (distance returned as the function result)
@@ -59,12 +66,12 @@ def cast_rays_from_site(
                 data,
                 origin,
                 vec,
-                geomgroup=geomgroup,
+                geomgroup=geomgroup_arr,
                 flg_static=int(include_static),
                 bodyexclude=-1,
                 geomid=geomid,
             )
-            if geomid >= 0:
+            if geomid.item() >= 0:
                 distances[i] = float(dist_val)
         elif hasattr(mujoco, "mj_raycast"):
             # Older API name where distance is an output argument
@@ -79,7 +86,7 @@ def cast_rays_from_site(
                 dist,
                 geomid,
             )
-            if geomid >= 0:
+            if geomid.item() >= 0:
                 distances[i] = float(dist)
         else:
             raise RuntimeError("No MuJoCo ray casting function found")
