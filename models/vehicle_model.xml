@@ -106,8 +106,9 @@
       <gyro name="gyro_pitch" site="driver_seat"/>
 
       <!-- LiDAR site positions for simulation -->
-      <framepos name="lidar_left_pos" site="lidar_left"/>
-      <framepos name="lidar_right_pos" site="lidar_right"/>
+      <!-- MuJoCo frame sensors use objtype/objname to specify targets -->
+      <framepos name="lidar_left_pos" objtype="site" objname="lidar_left"/>
+      <framepos name="lidar_right_pos" objtype="site" objname="lidar_right"/>
     </sensor>
 
   <actuator>
