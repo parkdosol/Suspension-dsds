@@ -1,12 +1,25 @@
 # Suspension
 
-### 프로그램 실행 
-1. bump_generator.py를 실행하여 speedbump stl을 생성합니다.
-2. update_mjcf.py를 실행하여 generated_scene.xml을 생성합니다.
-3. run_sim.py를 실행하여 차량 주행을 확인합니다.
+### 프로그램 실행
+`main.py`가 세 단계를 자동으로 수행합니다. 기본값으로 5개의 속도턱을 생성
+후 배치하고 시뮬레이션을 실행합니다.
 
-### 작업 참고 사항 
-1. bump_generator.py, update_mjcf.py, run_sim.py의 기능을 통합하여 main.py를 다시 작성할 예정입니다.
+```bash
+python main.py [옵션]
+```
+
+주요 옵션은 다음과 같습니다.
+
+| 옵션 | 설명 | 기본값 |
+|------|------|-------|
+|`-n`, `--num-bumps`|배치할 속도턱 개수|`5`|
+|`--seed`|랜덤 시드 (재현성)|`None`|
+|`--torque`|바퀴에 적용할 모터 토크|`100`|
+|`--time`|시뮬레이션 실행 시간(초)|`10`|
+|`--skip-generation`|기존 STL을 사용하고 새로 생성하지 않음|`False`|
+
+### 작업 참고 사항
+1. `main.py`에서 bump 생성, MJCF 갱신, 시뮬레이션 실행을 한 번에 수행합니다.
 2. 현재 PID.py 작업 중입니다. 여러 버전이 존재하여 혼란을 줄 우려가 있어 업로드 하지 않았습니다.
 3. run_sim.py는 PID 적용 및 출력값 수정 등의 이유로 구조가 크게 바뀔 수 있습니다.
 4. Commit Message에 구체적인 역할 정리해두었으니, 확인해주세요! 
