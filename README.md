@@ -4,6 +4,8 @@
 1. bump_generator.py를 실행하여 speedbump stl을 생성합니다.
 2. update_mjcf.py를 실행하여 generated_scene.xml을 생성합니다.
 3. run_sim.py를 실행하여 차량 주행을 확인합니다.
+   - 생성된 STL은 `models/speedbumps/` 폴더에 저장됩니다.
+   - MJCF 파일은 `models/generated_scene.xml`로 저장됩니다.
 
 ### 작업 참고 사항 
 1. bump_generator.py, update_mjcf.py, run_sim.py의 기능을 통합하여 main.py를 다시 작성할 예정입니다.

@@ -2,6 +2,10 @@ import numpy as np
 from stl import mesh
 import random
 import os
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_SAVE_DIR = SCRIPT_DIR.parent / "models" / "speedbumps"
 
 def format_float_for_filename(value: float) -> str:
     return f"{value:.3f}".replace('.', '_')
@@ -9,10 +13,11 @@ def format_float_for_filename(value: float) -> str:
 def generate_elliptical_cylinder_stl(
     a_range=(2.5, 3.5),
     b_range=(0.03, 0.045),
-    segments= 80,
-    save_dir="../models/speedbumps"
+    segments=80,
+    save_dir=DEFAULT_SAVE_DIR
 ) -> dict:
-    os.makedirs(save_dir, exist_ok=True)
+    save_dir = Path(save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
 
     # 랜덤 파라미터
     a = round(random.uniform(*a_range), 3)  # 장반경 (y)
@@ -24,7 +29,7 @@ def generate_elliptical_cylinder_stl(
     b_str = format_float_for_filename(b)
     h_str = format_float_for_filename(h)
     filename = f"speedbump-{a_str}-{b_str}-{h_str}.stl"
-    path = os.path.join(save_dir, filename)
+    path = save_dir / filename
 
     # 타원형 단면을 YZ 평면에 생성하고, X축 방향으로 길이 생성
     theta = np.linspace(0, 2 * np.pi, segments)
@@ -54,13 +59,13 @@ def generate_elliptical_cylinder_stl(
     for i, f in enumerate(faces):
         data['vectors'][i] = np.array(f)
     m = mesh.Mesh(data)
-    m.save(path)
+    m.save(str(path))
 
     print(f"✅ STL 저장: {path}")
 
     return {
         "filename": filename,
-        "filepath": path,
+        "filepath": str(path),
         "a": a,
         "b": b,
         "h": h
