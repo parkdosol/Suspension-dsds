@@ -36,6 +36,12 @@
       <site name="driver_seat" pos="0 0 0.24" size="0.015"
             rgba="1 0 1 0.5"/>
 
+      <!-- LiDAR origin sites -->
+      <site name="lidar_left" pos="0.3 0.32 0.24" size="0.01"
+            rgba="0 1 1 0.5"/>
+      <site name="lidar_right" pos="0.3 -0.32 0.24" size="0.01"
+            rgba="0 1 1 0.5"/>
+
       <!-- 앞왼쪽 바퀴 -->
       <body name="fl_susp" pos="0.3 0.36 0.0">
         <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001"/>
@@ -95,10 +101,14 @@
 
   <sensor>
     <!-- ✅ 운전석 기준 vertical 가속도 -->
-    <accelerometer name="accel_z" site="driver_seat"/>
-    <!-- ✅ pitch 확인용 자이로 (z축은 yaw, pitch는 x축 기준) -->
-    <gyro name="gyro_pitch" site="driver_seat"/>
-  </sensor>
+      <accelerometer name="accel_z" site="driver_seat"/>
+      <!-- ✅ pitch 확인용 자이로 (z축은 yaw, pitch는 x축 기준) -->
+      <gyro name="gyro_pitch" site="driver_seat"/>
+
+      <!-- LiDAR site positions for simulation -->
+      <framepos name="lidar_left_pos" site="lidar_left"/>
+      <framepos name="lidar_right_pos" site="lidar_right"/>
+    </sensor>
 
   <actuator>
     <motor name="fl_motor" joint="fl_wheel" ctrlrange="-10 10" gear="0.1"/>
