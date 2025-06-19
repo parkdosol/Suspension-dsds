@@ -9,11 +9,9 @@ try:
 except Exception:
     mujoco = None
 
-
 def _ensure_mujoco_available() -> None:
     if mujoco is None:
         raise RuntimeError("mujoco package is required for lidar utilities")
-
 
 def cast_rays_from_site(
     model: "mujoco.MjModel",
@@ -36,6 +34,10 @@ def cast_rays_from_site(
     origin = data.site_xpos[site_id].copy().reshape(3, 1)
     mat = data.site_xmat[site_id].reshape(3, 3)
 
+    # ⬇⬇⬇⬇⬇ 여기가 추가됨
+    distances = np.full(num_rays, max_distance, dtype=float)
+    # ⬆⬆⬆⬆⬆
+
     if geomgroup == -1:
         geomgroup_array = np.ones((6, 1), dtype=np.uint8)
     else:
@@ -48,9 +50,6 @@ def cast_rays_from_site(
         world_dir = mat @ local_dir
         vec = (world_dir * max_distance).reshape(3, 1)
 
-        # ``mj_ray`` and ``mj_raycast`` expect 1-element writable arrays for
-        # distance and geom id.  Using scalar "array(" would produce a 0-d
-        # read-only array and fail the type check.
         dist = np.array([max_distance], dtype=float)
         geomid = np.array([-1], dtype=np.int32)
 
@@ -63,7 +62,6 @@ def cast_rays_from_site(
 
         # call whichever ray API is available
         if hasattr(mujoco, "mj_ray"):
-            # Newer MuJoCo API (distance returned as the function result)
             dist_val = mujoco.mj_ray(
                 model,
                 data,
@@ -77,7 +75,6 @@ def cast_rays_from_site(
             if geomid.item() >= 0:
                 distances[i] = float(dist_val)
         elif hasattr(mujoco, "mj_raycast"):
-            # Older API name where distance is an output argument
             mujoco.mj_raycast(
                 model,
                 data,
@@ -95,7 +92,6 @@ def cast_rays_from_site(
             raise RuntimeError("No MuJoCo ray casting function found")
 
     return distances
-
 
 def lidar_observation(
     model: "mujoco.MjModel",

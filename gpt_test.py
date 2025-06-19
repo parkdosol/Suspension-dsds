@@ -8,6 +8,7 @@ from utils.lidar import lidar_observation  # 🔥 LiDAR 유틸 추가
 
 import mujoco
 import mujoco.viewer
+import numpy as np
 
 
 def run_simulation(xml_path="models/generated_scene.xml", torque=100.0, sim_time=10.0):
@@ -45,11 +46,14 @@ def run_simulation(xml_path="models/generated_scene.xml", torque=100.0, sim_time
                 max_distance=5.0,
             )
 
-            print(
-                f"time={data.time:.2f}s | acc_z={acc_z.item():.3f} m/s² | "
-                f"pitch_rate={gyro_pitch.item():.3f} rad/s | "
-                f"LiDAR[min]={lidar_vec.min():.2f} | LiDAR[max]={lidar_vec.max():.2f}"
-            )
+            # print(
+            #     f"time={data.time:.2f}s | acc_z={acc_z.item():.3f} m/s² | "
+            #     f"pitch_rate={gyro_pitch.item():.3f} rad/s | "
+            #     f"LiDAR[min]={lidar_vec.min():.2f} | LiDAR[max]={lidar_vec.max():.2f}"
+            # )
+            # (매 step에서)
+            print(f"LiDAR vector: {np.round(lidar_vec, 2)}")
+            print(f"min={lidar_vec.min():.2f}, max={lidar_vec.max():.2f}")
 
 
 def main():
