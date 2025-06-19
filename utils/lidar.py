@@ -77,8 +77,11 @@ def cast_rays_from_site(
         world_dir = mat @ local_dir
         vec[:] = world_dir * max_distance
 
-        dist = np.asarray(max_distance, dtype=float)
-        geomid = np.asarray(-1, dtype=np.int32)
+        # ``mj_ray`` and ``mj_raycast`` expect 1-element writable arrays for
+        # distance and geom id.  Using scalar "array(" would produce a 0-d
+        # read-only array and fail the type check.
+        dist = np.array([max_distance], dtype=float)
+        geomid = np.array([-1], dtype=np.int32)
 
         if geomgroup < 0:
             geomgroup_arr = np.ones(6, dtype=np.uint8)
@@ -116,7 +119,7 @@ def cast_rays_from_site(
                 geomid,
             )
             if geomid.item() >= 0:
-                distances[i] = float(dist)
+                distances[i] = float(dist.item())
         else:
             raise RuntimeError("No MuJoCo ray casting function found")
 
