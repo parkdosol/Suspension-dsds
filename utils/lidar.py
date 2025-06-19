@@ -48,26 +48,41 @@ def cast_rays_from_site(
         world_dir = mat @ local_dir
         vec = (world_dir * max_distance).reshape(3, 1)
 
-        dist = np.array([[max_distance]], dtype=np.float64)
-        dist.setflags(write=True)
-        geomid = np.array([[-1]], dtype=np.int32)
-        geomid.setflags(write=True)
+        dist = np.asarray(max_distance, dtype=float)
+        geomid = np.asarray(-1, dtype=np.int32)
 
-        mujoco.mj_ray(
-            model,
-            data,
-            origin,
-            vec,
-            geomgroup_array,
-            int(include_static),
-            int(include_dynamic),
-            dist,
-            geomid,
-        )
-
-        if geomid[0, 0] >= 0:
-            distances[i] = float(dist[0, 0])
-
+        # call whichever ray API is available
+        if hasattr(mujoco, "mj_ray"):
+            # Newer MuJoCo API (distance returned as the function result)
+            dist_val = mujoco.mj_ray(
+                model,
+                data,
+                origin,
+                vec,
+                geomgroup=geomgroup,
+                flg_static=int(include_static),
+                bodyexclude=-1,
+                geomid=geomid,
+            )
+            if geomid >= 0:
+                distances[i] = float(dist_val)
+        elif hasattr(mujoco, "mj_raycast"):
+            # Older API name where distance is an output argument
+            mujoco.mj_raycast(
+                model,
+                data,
+                origin,
+                vec,
+                geomgroup,
+                int(include_static),
+                int(include_dynamic),
+                dist,
+                geomid,
+            )
+            if geomid >= 0:
+                distances[i] = float(dist)
+        else:
+            raise RuntimeError("No MuJoCo ray casting function found")
 
     return distances
 
