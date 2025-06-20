@@ -2,9 +2,9 @@
 import argparse
 import time
 
-from utils.bump_generator import generate_elliptical_cylinder_stl
-from utils.update_mjcf import insert_stl_to_mjcf
-from utils.lidar import lidar_observation  # 🔥 LiDAR 유틸 추가
+from suspension.utils.bump_generator import generate_elliptical_cylinder_stl
+from suspension.utils.update_mjcf import insert_stl_to_mjcf
+from suspension.utils.lidar import lidar_observation  # 🔥 LiDAR 유틸 추가
 
 import mujoco
 import mujoco.viewer

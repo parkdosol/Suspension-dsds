@@ -7,7 +7,7 @@ from gym import spaces
 import numpy as np
 import mujoco
 
-from utils import update_mjcf
+from ..utils import update_mjcf
 
 
 class ActiveSuspensionEnv(gym.Env):
