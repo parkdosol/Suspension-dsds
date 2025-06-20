@@ -7,7 +7,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.logger import configure
 
 # Assuming ActiveSuspensionEnv is implemented elsewhere in this project
-from active_suspension_env import ActiveSuspensionEnv
+from suspension.envs.active_suspension_env import ActiveSuspensionEnv
 
 class RewardLoggingCallback(BaseCallback):
     """Callback for logging episode rewards to a CSV file."""
